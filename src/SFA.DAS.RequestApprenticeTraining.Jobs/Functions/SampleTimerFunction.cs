@@ -2,8 +2,7 @@
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.RequestApprenticeTraining;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.RequestApprenticeTraining.Requests;
+using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
 using System;
 using System.Threading.Tasks;
 
@@ -12,9 +11,9 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions
     public class SampleTimerFunction
     {
         private readonly ILogger<SampleTimerFunction> _log;
-        private readonly IRequestApprenticeTrainingApi _api;
+        private readonly IEmployerRequestApprenticeTrainingOuterApi _api;
 
-        public SampleTimerFunction(ILogger<SampleTimerFunction> log, IRequestApprenticeTrainingApi api)
+        public SampleTimerFunction(ILogger<SampleTimerFunction> log, IEmployerRequestApprenticeTrainingOuterApi api)
         {
             _log = log;
             _api = api;
@@ -27,7 +26,7 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions
             try
             {
                 _log.LogInformation($"SampleTimer has started");
-                await _api.CreateEmployerRequest(new PostEmployerRequest { EncodedAccountId = "AAA12", RequestType = Domain.Types.RequestType.Shortlist });
+                var employerRequest = await _api.GetEmployerRequest(new Guid("EC4CC0DA-786E-4339-D40A-08DCB6FBD772"));
                 _log.LogInformation($"SampleTimer has finished");
             }
             catch(Exception ex)

@@ -1,28 +1,32 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RestEase.HttpClientFactory;
+using SFA.DAS.Http.Configuration;
 using SFA.DAS.Http.MessageHandlers;
-using SFA.DAS.Http.TokenGenerators;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.RequestApprenticeTraining;
+using SFA.DAS.RequestApprenticeTraining.Infrastructure;
+using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
+using SFA.DAS.RequestApprenticeTraining.Infrastructure.Configuration;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.StartupExtensions
 {
     public static class AddServiceRegistrationExtensions
     {
-        public static IServiceCollection AddRequestApprenticeTrainingApi(this IServiceCollection services)
+        public static IServiceCollection AddOuterApi(this IServiceCollection services)
         {
             services.AddScoped<DefaultHeadersHandler>();
             services.AddScoped<LoggingMessageHandler>();
+            services.AddScoped<ApimHeadersHandler>();
 
             var configuration = services
                 .BuildServiceProvider()
-                .GetRequiredService<RequestApprenticeTrainingApiClientConfiguration>();
+                .GetRequiredService<EmployerRequestApprenticeTrainingOuterApiConfiguration>();
 
             services
-                .AddRestEaseClient<IRequestApprenticeTrainingApi>(configuration.ApiBaseUrl)
+                .AddRestEaseClient<IEmployerRequestApprenticeTrainingOuterApi>(configuration.ApiBaseUrl)
                 .AddHttpMessageHandler<DefaultHeadersHandler>()
-                .AddHttpMessageHandler(sp => new ManagedIdentityHeadersHandler(new ManagedIdentityTokenGenerator(configuration)))
                 .AddHttpMessageHandler<LoggingMessageHandler>();
-                
+
+            services.AddTransient<IApimClientConfiguration>((_) => configuration);
+
             return services;
         }
     }

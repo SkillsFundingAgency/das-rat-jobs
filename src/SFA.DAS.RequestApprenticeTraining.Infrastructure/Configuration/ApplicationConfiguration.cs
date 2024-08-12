@@ -1,9 +1,7 @@
-﻿using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.RequestApprenticeTraining;
-
-namespace SFA.DAS.RequestApprenticeTraining.Infrastructure.Configuration
+﻿namespace SFA.DAS.RequestApprenticeTraining.Infrastructure.Configuration
 {
     public class ApplicationConfiguration
     {
-        public RequestApprenticeTrainingApiClientConfiguration RequestApprenticeTrainingApiConfiguration { get; set; }
+        public EmployerRequestApprenticeTrainingOuterApiConfiguration EmployerRequestApprenticeTrainingOuterApiConfiguration { get; set; }
     }
 }
