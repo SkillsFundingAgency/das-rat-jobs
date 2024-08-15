@@ -68,6 +68,9 @@
         "utcValue": {
             "type": "string",
             "defaultValue": "[utcNow()]"
+        },
+        "tenant": {
+            "type": "string"
         }
     },
     "variables": {
@@ -76,7 +79,7 @@
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "functionAppName": "[concat(variables('resourceNamePrefix'), '-fa')]",
         "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]",
-        "configNames": "SFA.DAS.RequestApprenticeTraining"
+        "configNames": "SFA.DAS.RequestApprenticeTraining.Jobs"
     },
     "resources": [
         {
