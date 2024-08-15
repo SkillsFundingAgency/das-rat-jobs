@@ -34,7 +34,7 @@ resources:
   - pipeline: das-employer-config
     project: Digital Apprenticeship Service
     source: das-employer-config
-    branch: master
+    branch: QF_1864_Initial_code
 
 stages:
 - stage: Build
