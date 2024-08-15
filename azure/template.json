@@ -68,9 +68,6 @@
         "utcValue": {
             "type": "string",
             "defaultValue": "[utcNow()]"
-        },
-        "tenant": {
-            "type": "string"
         }
     },
     "variables": {
