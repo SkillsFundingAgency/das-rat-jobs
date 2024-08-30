@@ -26,7 +26,7 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions
             try
             {
                 _log.LogInformation($"SampleTimer has started");
-                var employerRequest = await _api.GetEmployerRequest(new Guid("EC4CC0DA-786E-4339-D40A-08DCB6FBD772"));
+                var employerRequest = await _api.GetEmployerRequest(new Guid("1B02548D-2108-461A-A0B2-E9419B4E0A69"));
                 _log.LogInformation($"SampleTimer has finished");
             }
             catch(Exception ex)
