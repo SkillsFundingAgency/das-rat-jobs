@@ -8,7 +8,6 @@ namespace SFA.DAS.RequestApprenticeTraining.Infrastructure.Configuration
 {
     public class FunctionsOptions
     {
-        public string SampleTimerSchedule { get; set; }
         public string ExpireEmployerRequestsTimerSchedule { get; set; }
     }
 }
