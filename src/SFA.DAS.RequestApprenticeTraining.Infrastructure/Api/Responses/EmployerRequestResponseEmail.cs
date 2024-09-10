@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Responses
 {
     [ExcludeFromCodeCoverage]
-    public class EmployerRequestProviderResponseNotificationEmail
+    public class EmployerRequestResponseEmail
     {
         public Guid RequestedBy { get; set; }
         public long AccountId { get; set; }

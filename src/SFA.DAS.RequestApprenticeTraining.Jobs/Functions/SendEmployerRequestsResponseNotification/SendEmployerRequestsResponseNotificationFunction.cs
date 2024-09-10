@@ -6,32 +6,30 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
 using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Responses;
 using System.Linq;
-using RestEase;
-using System;
 
-namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendProviderResponseNotifications
+namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsResponseNotification
 {
-    public class SendProviderResponseNotificationsFunction
+    public class SendEmployerRequestsResponseNotificationFunction
     {
-        private readonly ILogger<SendProviderResponseNotificationsFunction> _logger;
+        private readonly ILogger<SendEmployerRequestsResponseNotificationFunction> _logger;
         private readonly IEmployerRequestApprenticeTrainingOuterApi _api;
 
-        public SendProviderResponseNotificationsFunction(
-            ILogger<SendProviderResponseNotificationsFunction> logger,
+        public SendEmployerRequestsResponseNotificationFunction(
+            ILogger<SendEmployerRequestsResponseNotificationFunction> logger,
             IEmployerRequestApprenticeTrainingOuterApi api)
         {
             _logger = logger;
             _api = api;
         }
 
-        [FunctionName("SendProviderResponseNotifications")]
-        public async Task SendProviderResponseNotifications(
-            [ActivityTrigger] EmployerRequestProviderResponseNotificationEmail response)
+        [FunctionName("SendEmployerRequestsResponseNotification")]
+        public async Task SendEmployerRequestsResponseNotification(
+            [ActivityTrigger] EmployerRequestResponseEmail response)
         {
-            _logger.LogInformation($"SendProviderResponseNotifications executed at: {System.DateTime.Now}");
+            _logger.LogInformation($"SendEmployerRequestsResponseNotification executed at: {System.DateTime.Now}");
 
             // Construct the notification request
-            var notificationRequest = new SendProviderNotificationEmailRequest
+            var emailRequest = new SendEmployerRequestsResponseEmail
             {
                 AccountId = response.AccountId,
                 RequestedBy = response.RequestedBy,
@@ -42,10 +40,7 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendProviderResponseN
                 }).ToList()
             };
 
-            await _api.SendProviderResponseNotifications(notificationRequest);
-
-            _logger.LogInformation($"Email sent successfully at: {System.DateTime.Now}");
-            
+            await _api.SendEmployerRequestsResponseNotification(emailRequest);
         }
     }
 

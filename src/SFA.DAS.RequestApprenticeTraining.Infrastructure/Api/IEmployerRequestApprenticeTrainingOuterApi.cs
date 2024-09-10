@@ -8,10 +8,10 @@ namespace SFA.DAS.RequestApprenticeTraining.Infrastructure.Api
     {
 
         [Post("/employerrequests/send-notifications")]
-        Task SendProviderResponseNotifications([Body]SendProviderNotificationEmailRequest request);
+        Task SendEmployerRequestsResponseNotification([Body]SendEmployerRequestsResponseEmail request);
 
         [Get("/employerrequests/requests-for-response-notification")]
-        Task<List<EmployerRequestProviderResponseNotificationEmail>> GetEmployerRequestsForResponseNotification();
+        Task<List<EmployerRequestResponseEmail>> GetEmployerRequestsForResponseNotification();
 
         [Post("/employerrequests/expire-requests")]
         Task ExpireEmployerRequests();
