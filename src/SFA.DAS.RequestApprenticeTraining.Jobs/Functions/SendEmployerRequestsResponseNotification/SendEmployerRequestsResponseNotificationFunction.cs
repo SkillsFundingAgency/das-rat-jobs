@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
 using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Responses;
 using System.Linq;
+using SFA.DAS.RequestApprenticeTraining.Infrastructure.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsResponseNotification
 {
@@ -13,13 +15,16 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
     {
         private readonly ILogger<SendEmployerRequestsResponseNotificationFunction> _logger;
         private readonly IEmployerRequestApprenticeTrainingOuterApi _api;
+        private readonly IOptions<ApplicationConfiguration> _options;
 
         public SendEmployerRequestsResponseNotificationFunction(
             ILogger<SendEmployerRequestsResponseNotificationFunction> logger,
-            IEmployerRequestApprenticeTrainingOuterApi api)
+            IEmployerRequestApprenticeTrainingOuterApi api,
+            IOptions<ApplicationConfiguration> options)
         {
             _logger = logger;
             _api = api;
+            _options = options;
         }
 
         [FunctionName("SendEmployerRequestsResponseNotification")]
@@ -37,7 +42,9 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
                 {
                     StandardTitle = s.StandardTitle,
                     StandardLevel = s.StandardLevel,
-                }).ToList()
+                }).ToList(),
+                ManageRequestsLink = $"{_options.Value.EmployerRequestApprenticeshipTrainingBaseUrl}{{0}}/dashboard",
+                ManageNotificationSettingsLink = $"{_options.Value.EmployerAccountsBaseUrl}settings/notifications",
             };
 
             await _api.SendEmployerRequestsResponseNotification(emailRequest);
