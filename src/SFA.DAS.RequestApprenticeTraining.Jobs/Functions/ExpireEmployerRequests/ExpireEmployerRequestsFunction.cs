@@ -6,7 +6,7 @@ using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
 using System;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions
+namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.ExpireEmployerRequests
 {
     public class ExpireEmployerRequestsFunction
     {
@@ -25,9 +25,9 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions
         {
             try
             {
-                 await _api.ExpireEmployerRequests();
+                await _api.ExpireEmployerRequests();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _log.LogError(ex, $"ExpireEmployerRequestsTimer has failed");
                 throw;
