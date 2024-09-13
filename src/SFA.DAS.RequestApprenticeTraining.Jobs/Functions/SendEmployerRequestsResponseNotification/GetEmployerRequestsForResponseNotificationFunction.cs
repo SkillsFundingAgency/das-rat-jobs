@@ -15,6 +15,7 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
         public GetEmployerRequestsForResponseNotificationFunction(IEmployerRequestApprenticeTrainingOuterApi api)
         {
             _api = api;
+
         }
 
         [FunctionName("GetEmployerRequestsForResponseNotification")]
