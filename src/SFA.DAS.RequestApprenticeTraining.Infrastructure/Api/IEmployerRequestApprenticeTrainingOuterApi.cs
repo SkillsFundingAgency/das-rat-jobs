@@ -7,17 +7,14 @@ namespace SFA.DAS.RequestApprenticeTraining.Infrastructure.Api
     public interface IEmployerRequestApprenticeTrainingOuterApi
     {
 
-        [Post("/employerrequests/send-notifications")]
+        [Post("/employer-requests/send-notification")]
         Task SendEmployerRequestsResponseNotification([Body]SendEmployerRequestsResponseEmail request);
 
-        [Get("/employerrequests/requests-for-response-notification")]
+        [Get("/employer-requests/response-notifications")]
         Task<List<EmployerRequestResponseEmail>> GetEmployerRequestsForResponseNotification();
 
-        [Post("/employerrequests/expire-requests")]
+        [Post("/employer-requests/expire")]
         Task ExpireEmployerRequests();
-
-        [Get("/employerrequests/{employerRequestId}")]
-        Task<EmployerRequest> GetEmployerRequest([Path] Guid employerRequestId);
 
         [Get("/ping")]
         Task Ping();
