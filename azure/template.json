@@ -226,7 +226,7 @@
                         "value": "[variables('resourceGroupName')]"
                     },
                     "netFrameworkVersion": {
-                        "value": "v6.0"
+                        "value": "v8.0"
                     },
                     "subnetResourceId": {
                         "value": "[reference(concat(parameters('subnetObject').name, '-', parameters('utcValue'))).outputs.SubnetResourceId.value]"
@@ -276,6 +276,10 @@
                                 },
                                 {
                                     "name": "WEBSITE_RUN_FROM_PACKAGE",
+                                    "value": "1"
+                                },
+                                {
+                                    "name": "FUNCTIONS_INPROC_NET8_ENABLED",
                                     "value": "1"
                                 }
                             ]
