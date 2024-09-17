@@ -26,7 +26,7 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
 
         [FunctionName("SendEmployerRequestsResponseNotificationHttpTrigger")]
         public async Task<IActionResult> RunHttpTrigger(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req,
             [DurableClient] IDurableOrchestrationClient starter,
             ILogger log)
         {

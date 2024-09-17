@@ -10,5 +10,6 @@ namespace SFA.DAS.RequestApprenticeTraining.Infrastructure.Configuration
     {
         public string ExpireEmployerRequestsTimerSchedule { get; set; }
         public string SendEmployerRequestsResponseNotificationTimerSchedule { get; set; }
+        public string RefreshStandardsTimerSchedule { get; set; }
     }
 }

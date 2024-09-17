@@ -37,7 +37,7 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.ExpireEmployerRequest
 #if DEBUG
         [FunctionName("ExpireEmployerRequestsHttp")]
         public async Task ExpireEmployerRequestsHttp(
-            [HttpTrigger(AuthorizationLevel.Function, "POST")] HttpRequest request)
+            [HttpTrigger(AuthorizationLevel.Function, "GET")] HttpRequest request)
         {
             try
             {
