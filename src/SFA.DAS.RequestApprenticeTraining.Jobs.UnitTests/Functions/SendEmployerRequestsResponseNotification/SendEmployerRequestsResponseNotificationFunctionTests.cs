@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.DurableTask;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -18,19 +19,22 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
         {
             // Arrange
             var mockApi = new Mock<IEmployerRequestApprenticeTrainingOuterApi>();
-            var mockLogger = new Mock<ILogger<SendEmployerRequestsResponseNotificationFunction>>();
-            var mockOptions = new Mock<IOptions<ApplicationConfiguration>>();
+            var mockLogger = new Mock<ILogger<SendEmployerRequestsResponseNotificationActivity>>();
+
+            var mockTaskActivityContext = new Mock<TaskActivityContext>();
+
             var config = new ApplicationConfiguration()
             {
                 EmployerAccountsBaseUrl = "http://employeraccounts/",
                 EmployerRequestApprenticeshipTrainingBaseUrl = $"http://employerratweb/",
             };
+            var mockOptions = new Mock<IOptions<ApplicationConfiguration>>();
             mockOptions.Setup(o => o.Value).Returns(config);
 
-            var function = new SendEmployerRequestsResponseNotificationFunction(mockLogger.Object, mockApi.Object, mockOptions.Object);
+            var sut = new SendEmployerRequestsResponseNotificationActivity(mockApi.Object, mockLogger.Object, mockOptions.Object);
 
             // Act
-            await function.SendEmployerRequestsResponseNotification(email);
+            await sut.RunAsync(mockTaskActivityContext.Object, email);
 
             // Assert
             var expectedManageRequestsLink = $"{config.EmployerRequestApprenticeshipTrainingBaseUrl}{{0}}/dashboard";

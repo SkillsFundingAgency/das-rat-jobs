@@ -1,42 +1,36 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs.Extensions.Timers;
-using Microsoft.Azure.WebJobs;
+﻿using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Requests;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Responses;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Configuration;
-using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.RequestApprenticeTraining.Jobs.UnitTests.Helpers;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsResponseNotification.UnitTests
 {
-    public class SendEmployerRequestsResponseNotificat
+    public class SendEmployerRequestsResponseNotification
     {
         [Test]
         public async Task RunTimerTrigger_Should_Start_New_Orchestration_And_Log_Messages()
         {
             // Arrange
-            var mockDurableClient = new Mock<IDurableOrchestrationClient>();
-            var mockLogger = new Mock<ILogger>();
-            var timerInfo = new TimerInfo(null, new ScheduleStatus(), true);
+            var mockDurableTaskClient = new Mock<FakeDurableTaskClient>();
+            var mockLogger = new Mock<ILogger<SendEmployerRequestsResponseNotificationTriggerFunction>>();
+            var timerInfo = new TimerInfo();
 
-            var function = new SendEmployerRequestsResponseNotificationTimerTriggerFunction();
+            var function = new SendEmployerRequestsResponseNotificationTriggerFunction(mockLogger.Object);
 
-            mockDurableClient
-                .Setup(x => x.StartNewAsync("SendEmployerRequestsResponseNotificationOrchestrator", null))
+            mockDurableTaskClient
+                .Setup(x => x.ScheduleNewOrchestrationInstanceAsync(nameof(SendEmployerRequestsResponseNotificationOrchestration), CancellationToken.None))
                 .ReturnsAsync("test-instance-id");
 
             // Act
-            await function.RunTimerTrigger(timerInfo, mockDurableClient.Object, mockLogger.Object);
+            await function.SendEmployerRequestsResponseNotificationTimer(timerInfo, mockDurableTaskClient.Object);
 
             // Assert
-            mockDurableClient.Verify(x =>
-                x.StartNewAsync("SendEmployerRequestsResponseNotificationOrchestrator", null),
+            mockDurableTaskClient.Verify(x =>
+                x.ScheduleNewOrchestrationInstanceAsync(nameof(SendEmployerRequestsResponseNotificationOrchestration), CancellationToken.None),
                 Times.Once);
         }
     }

@@ -1,39 +1,34 @@
-﻿using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Requests;
-using System.Threading.Tasks;
+﻿using Microsoft.DurableTask;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Responses;
-using System.Linq;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Configuration;
 using Microsoft.Extensions.Options;
+using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
+using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Requests;
+using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Responses;
+using SFA.DAS.RequestApprenticeTraining.Infrastructure.Configuration;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsResponseNotification
 {
-    public class SendEmployerRequestsResponseNotificationFunction
+    [DurableTask(nameof(SendEmployerRequestsResponseNotificationActivity))]
+    public class SendEmployerRequestsResponseNotificationActivity : TaskActivity<EmployerRequestResponseEmail, object>
     {
-        private readonly ILogger<SendEmployerRequestsResponseNotificationFunction> _logger;
         private readonly IEmployerRequestApprenticeTrainingOuterApi _api;
+        private readonly ILogger<SendEmployerRequestsResponseNotificationActivity> _logger;
         private readonly IOptions<ApplicationConfiguration> _options;
 
-        public SendEmployerRequestsResponseNotificationFunction(
-            ILogger<SendEmployerRequestsResponseNotificationFunction> logger,
+        public SendEmployerRequestsResponseNotificationActivity(
             IEmployerRequestApprenticeTrainingOuterApi api,
+            ILogger<SendEmployerRequestsResponseNotificationActivity> logger,
             IOptions<ApplicationConfiguration> options)
         {
-            _logger = logger;
             _api = api;
+            _logger = logger;
             _options = options;
         }
 
-        [FunctionName("SendEmployerRequestsResponseNotification")]
-        public async Task SendEmployerRequestsResponseNotification(
-            [ActivityTrigger] EmployerRequestResponseEmail response)
+        public async override Task<object> RunAsync(TaskActivityContext context, EmployerRequestResponseEmail response)
         {
-            _logger.LogInformation($"SendEmployerRequestsResponseNotification executed at: {System.DateTime.Now}");
+            _logger.LogInformation("{ActivityName} started at {DateTimeNow}", nameof(SendEmployerRequestsResponseNotificationActivity), DateTime.Now);
 
-            // Construct the notification request
             var emailRequest = new SendEmployerRequestsResponseEmail
             {
                 AccountId = response.AccountId,
@@ -48,7 +43,8 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
             };
 
             await _api.SendEmployerRequestsResponseNotification(emailRequest);
+
+            return Task.CompletedTask;
         }
     }
-
 }

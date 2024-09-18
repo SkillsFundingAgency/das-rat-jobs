@@ -1,56 +1,51 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
-using System;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.ExpireEmployerRequests
 {
     public class ExpireEmployerRequestsFunction
     {
-        private readonly ILogger<ExpireEmployerRequestsFunction> _log;
         private readonly IEmployerRequestApprenticeTrainingOuterApi _api;
+        private readonly ILogger<ExpireEmployerRequestsFunction> _logger;
 
-        public ExpireEmployerRequestsFunction(ILogger<ExpireEmployerRequestsFunction> log, IEmployerRequestApprenticeTrainingOuterApi api)
+        public ExpireEmployerRequestsFunction(IEmployerRequestApprenticeTrainingOuterApi api, ILogger<ExpireEmployerRequestsFunction> logger)
         {
-            _log = log;
             _api = api;
+            _logger = logger;
         }
 
-        [FunctionName("ExpireEmployerRequestsTimer")]
-        public async Task ExpireEmployerRequestsTimer(
-            [TimerTrigger("%FunctionsOptions:ExpireEmployerRequestsTimerSchedule%")] TimerInfo timer)
+        [Function(nameof(ExpireEmployerRequestsTimer))]
+        public async Task ExpireEmployerRequestsTimer([TimerTrigger("%FunctionsOptions:ExpireEmployerRequestsTimerSchedule%")] TimerInfo myTimer)
         {
-            try
-            {
-                await _api.ExpireEmployerRequests();
-            }
-            catch (Exception ex)
-            {
-                _log.LogError(ex, $"ExpireEmployerRequestsTimer has failed");
-                throw;
-            }
+            await Run(nameof(ExpireEmployerRequestsTimer));
         }
 
 #if DEBUG
-        [FunctionName("ExpireEmployerRequestsHttp")]
+        [Function(nameof(ExpireEmployerRequestsHttp))]
         public async Task ExpireEmployerRequestsHttp(
             [HttpTrigger(AuthorizationLevel.Function, "POST")] HttpRequest request)
         {
+            await Run(nameof(ExpireEmployerRequestsHttp));
+        }
+#endif
+
+        private async Task Run(string functionName)
+        {
             try
             {
-                _log.LogInformation($"ExpireEmployerRequestsHttp has started");
+                _logger.LogInformation("{FunctionName} has started", functionName);
+
                 await _api.ExpireEmployerRequests();
-                _log.LogInformation($"ExpireEmployerRequestsHttp has finished");
+
+                _logger.LogInformation("{FunctionName} has finished", functionName);
             }
             catch (Exception ex)
             {
-                _log.LogError(ex, $"ExpireEmployerRequestsHttp has failed");
+                _logger.LogError(ex, "{FunctionName} has has failed", functionName);
                 throw;
             }
         }
-#endif
     }
 }
