@@ -32,7 +32,9 @@
     <ProjectReference Include="..\SFA.DAS.RequestApprenticeTraining.Infrastructure\SFA.DAS.RequestApprenticeTraining.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="nlog.config" />
+    <Content Include="nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
