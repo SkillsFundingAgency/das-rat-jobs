@@ -16,7 +16,7 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
 
 
         [Function(nameof(SendEmployerRequestsResponseNotificationTimer))]
-        public async Task SendEmployerRequestsResponseNotificationTimer([TimerTrigger("%FunctionsOptions:SendEmployerRequestsResponseNotificationTimerSchedule%")] TimerInfo myTimer,
+        public async Task SendEmployerRequestsResponseNotificationTimer([TimerTrigger("%SendEmployerRequestsResponseNotificationTimerSchedule%")] TimerInfo myTimer,
             [DurableClient] DurableTaskClient client)
         {
             await Run(nameof(SendEmployerRequestsResponseNotificationTimer), client);

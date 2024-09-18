@@ -17,7 +17,7 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.ExpireEmployerRequest
         }
 
         [Function(nameof(ExpireEmployerRequestsTimer))]
-        public async Task ExpireEmployerRequestsTimer([TimerTrigger("%FunctionsOptions:ExpireEmployerRequestsTimerSchedule%")] TimerInfo myTimer)
+        public async Task ExpireEmployerRequestsTimer([TimerTrigger("%ExpireEmployerRequestsTimerSchedule%")] TimerInfo myTimer)
         {
             await Run(nameof(ExpireEmployerRequestsTimer));
         }

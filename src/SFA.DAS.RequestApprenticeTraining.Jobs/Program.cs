@@ -21,7 +21,6 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs
                     services.ConfigureFunctionsApplicationInsights();
                     services.AddApplicationOptions();
                     services.ConfigureFromOptions(f => f.EmployerRequestApprenticeTrainingOuterApiConfiguration);
-                    services.ConfigureFromOptions(f => f.FunctionsOptions);
                     services.AddOuterApi();
                 })
                 .ConfigureLogging((hostingContext, logging) =>

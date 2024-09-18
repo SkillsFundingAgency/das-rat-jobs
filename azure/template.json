@@ -75,7 +75,10 @@
             "type": "string",
             "defaultValue": "[utcNow()]"
         },
-        "scheduleTestInConfig": {
+        "expireEmployerRequestsTimerSchedule": {
+            "type": "string"
+        },
+        "sendEmployerRequestsResponseNotificationTimerSchedule": {
             "type": "string"
         }
     },
@@ -282,8 +285,12 @@
                                     "value": "1"
                                 },
                                 {
-                                  "name": "ScheduleTest",
-                                  "value": "[parameters('scheduleTestInConfig')]"
+                                  "name": "ExpireEmployerRequestsTimerSchedule",
+                                  "value": "[parameters('expireEmployerRequestsTimerSchedule')]"
+                                },
+                                {
+                                  "name": "SendEmployerRequestsResponseNotificationTimerSchedule",
+                                  "value": "[parameters('sendEmployerRequestsResponseNotificationTimerSchedule')]"
                                 }
                             ]
                         }
