@@ -11,14 +11,17 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs
         {
             var host = new HostBuilder()
                 .ConfigureFunctionsWebApplication()
-                .ConfigureServices(services =>
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    config.AddConfiguration();
+                })
+                .ConfigureServices((context, services) =>
                 {
                     services.AddApplicationInsightsTelemetryWorkerService();
                     services.ConfigureFunctionsApplicationInsights();
-                    services.AddOptions();
                     services.AddApplicationOptions();
                     services.ConfigureFromOptions(f => f.EmployerRequestApprenticeTrainingOuterApiConfiguration);
-                    services.ConfigureFromOptions(f => f.FunctionOptions);
+                    services.ConfigureFromOptions(f => f.FunctionsOptions);
                     services.AddOuterApi();
                 })
                 .ConfigureLogging((hostingContext, logging) =>
