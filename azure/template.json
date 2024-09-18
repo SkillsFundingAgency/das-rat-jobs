@@ -277,6 +277,10 @@
                                 {
                                     "name": "WEBSITE_RUN_FROM_PACKAGE",
                                     "value": "1"
+                                },
+                                {
+                                  "name": "ScheduleTest",
+                                  "value": "[parameters('scheduleTestInConfig')]"
                                 }
                             ]
                         }
