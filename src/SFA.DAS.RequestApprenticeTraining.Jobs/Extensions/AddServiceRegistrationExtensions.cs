@@ -22,6 +22,7 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Extensions
             services
                 .AddRestEaseClient<IEmployerRequestApprenticeTrainingOuterApi>(configuration.ApiBaseUrl)
                 .AddHttpMessageHandler<DefaultHeadersHandler>()
+                .AddHttpMessageHandler<ApimHeadersHandler>()
                 .AddHttpMessageHandler<LoggingMessageHandler>();
 
             services.AddTransient<IApimClientConfiguration>((_) => configuration);
