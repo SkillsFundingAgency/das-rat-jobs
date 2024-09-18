@@ -74,6 +74,9 @@
         "utcValue": {
             "type": "string",
             "defaultValue": "[utcNow()]"
+        },
+        "scheduleTestInConfig": {
+            "type": "string"
         }
     },
     "variables": {
