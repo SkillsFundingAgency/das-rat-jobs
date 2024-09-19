@@ -1,4 +1,4 @@
-﻿using Microsoft.DurableTask;
+﻿using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
@@ -8,8 +8,7 @@ using SFA.DAS.RequestApprenticeTraining.Infrastructure.Configuration;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsResponseNotification
 {
-    [DurableTask(nameof(SendEmployerRequestsResponseNotificationActivity))]
-    public class SendEmployerRequestsResponseNotificationActivity : TaskActivity<EmployerRequestResponseEmail, object>
+    public class SendEmployerRequestsResponseNotificationActivity
     {
         private readonly IEmployerRequestApprenticeTrainingOuterApi _api;
         private readonly ILogger<SendEmployerRequestsResponseNotificationActivity> _logger;
@@ -25,7 +24,8 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
             _options = options;
         }
 
-        public async override Task<object> RunAsync(TaskActivityContext context, EmployerRequestResponseEmail response)
+        [Function("SendEmployerRequestsResponseNotificationActivity")]
+        public async Task RunActivity([ActivityTrigger] EmployerRequestResponseEmail response)
         {
             _logger.LogInformation("{ActivityName} started at {DateTimeNow}", nameof(SendEmployerRequestsResponseNotificationActivity), DateTime.Now);
 
@@ -38,13 +38,11 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
                     StandardTitle = s.StandardTitle,
                     StandardLevel = s.StandardLevel,
                 }).ToList(),
-                ManageRequestsLink = $"{_options.Value.EmployerRequestApprenticeshipTrainingBaseUrl}{{0}}/dashboard",
+                ManageRequestsLink = $"{_options.Value.EmployerRequestApprenticeshipTrainingBaseUrl}accounts/{{0}}/employer-requests/dashboard",
                 ManageNotificationSettingsLink = $"{_options.Value.EmployerAccountsBaseUrl}settings/notifications",
             };
 
             await _api.SendEmployerRequestsResponseNotification(emailRequest);
-
-            return Task.CompletedTask;
         }
     }
 }

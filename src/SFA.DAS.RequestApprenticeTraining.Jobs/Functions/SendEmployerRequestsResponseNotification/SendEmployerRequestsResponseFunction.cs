@@ -14,7 +14,6 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
             _logger = logger;
         }
 
-
         [Function(nameof(SendEmployerRequestsResponseNotificationTimer))]
         public async Task SendEmployerRequestsResponseNotificationTimer([TimerTrigger("%SendEmployerRequestsResponseNotificationTimerSchedule%")] TimerInfo myTimer,
             [DurableClient] DurableTaskClient client)
@@ -45,7 +44,6 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
             catch (Exception ex)
             {
                 _logger.LogError(ex, "{FunctionName} has has failed", functionName);
-                throw;
             }
         }
     }

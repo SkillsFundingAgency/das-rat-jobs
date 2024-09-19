@@ -1,15 +1,16 @@
-﻿using Microsoft.DurableTask;
+﻿using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Responses;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsResponseNotification
 {
-    [DurableTask(nameof(SendEmployerRequestsResponseNotificationOrchestration))]
-    public class SendEmployerRequestsResponseNotificationOrchestration : TaskOrchestrator<string, object>
+    public static class SendEmployerRequestsResponseNotificationOrchestration
     {
-        public async override Task<object> RunAsync(TaskOrchestrationContext context, string input)
+        [Function("SendEmployerRequestsResponseNotificationOrchestration")]
+        public static async Task RunOrchestrator([OrchestrationTrigger] TaskOrchestrationContext context)
         {
-            ILogger logger = context.CreateReplaySafeLogger<SendEmployerRequestsResponseNotificationOrchestration>();
+            ILogger logger = context.CreateReplaySafeLogger(typeof(SendEmployerRequestsResponseNotificationOrchestration));
 
             logger.LogInformation("{OrchestrationName} started", nameof(SendEmployerRequestsResponseNotificationOrchestration));
 
@@ -19,12 +20,10 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
 
             foreach (var request in employerRequests)
             {
-                tasks.Add(context.CallActivityAsync(nameof(SendEmployerRequestsResponseNotificationActivity), request));
+                tasks.Add(context.CallActivityAsync(nameof(SendEmployerRequestsResponseNotificationActivity), request, null));
             }
 
             await Task.WhenAll(tasks);
-
-            return Task.CompletedTask;
         }
     }
 }

@@ -1,12 +1,11 @@
-﻿using Microsoft.DurableTask;
+﻿using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
 using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Responses;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsResponseNotification
 {
-    [DurableTask(nameof(GetEmployerRequestsForResponseNotificationActivity))]
-    public class GetEmployerRequestsForResponseNotificationActivity : TaskActivity<object, List<EmployerRequestResponseEmail>>
+    public class GetEmployerRequestsForResponseNotificationActivity
     {
         private readonly IEmployerRequestApprenticeTrainingOuterApi _api;
         private readonly ILogger<GetEmployerRequestsForResponseNotificationActivity> _logger;
@@ -19,10 +18,11 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
             _logger = logger;
         }
 
-        public async override Task<List<EmployerRequestResponseEmail>> RunAsync(TaskActivityContext context, object input)
+        [Function("GetEmployerRequestsForResponseNotificationActivity")]
+        public async Task<List<EmployerRequestResponseEmail>> RunActivity([ActivityTrigger] string name)
         {
             _logger.LogInformation("{ActivityName} started at {DateTimeNow}", nameof(GetEmployerRequestsForResponseNotificationActivity), DateTime.Now);
-            
+
             return await _api.GetEmployerRequestsForResponseNotification();
         }
     }

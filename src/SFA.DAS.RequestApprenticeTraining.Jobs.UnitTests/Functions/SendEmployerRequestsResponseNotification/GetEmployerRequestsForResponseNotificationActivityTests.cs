@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Microsoft.DurableTask;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsResponseNotification.UnitTests
 {
-    public class GetEmployerRequestsForResponseNotificationFunctionTests
+    public class GetEmployerRequestsForResponseNotificationActivityTests
     {
         [Test, MoqAutoData]
         public async Task GetEmployerRequestsForResponseNotification_Should_Return_EmployerRequests(
@@ -22,12 +21,11 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
             mockApi.Setup(s => s.GetEmployerRequestsForResponseNotification()).ReturnsAsync(expectedRequests);
 
             var mockLogger = new Mock<ILogger<GetEmployerRequestsForResponseNotificationActivity>>();
-            var mockTaskActivityContext = new Mock<TaskActivityContext>();
-
+            
             var sut = new GetEmployerRequestsForResponseNotificationActivity(mockApi.Object, mockLogger.Object);
 
             // Act
-            var result = await sut.RunAsync(mockTaskActivityContext.Object, new object());
+            var result = await sut.RunActivity(null);
 
             // Assert
             mockApi.Verify(s => s.GetEmployerRequestsForResponseNotification(), Times.Once);

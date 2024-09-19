@@ -1,5 +1,4 @@
-﻿using Microsoft.DurableTask;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -12,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsResponseNotification.UnitTests
 {
-    public class SendEmployerRequestsResponseNotificationsFunctionTests
+    public class SendEmployerRequestsResponseNotificationActivityTests
     {
         [Test, MoqAutoData]
         public async Task SendProviderResponseNotifications_Should_Send_Notification(EmployerRequestResponseEmail email)
@@ -20,8 +19,6 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
             // Arrange
             var mockApi = new Mock<IEmployerRequestApprenticeTrainingOuterApi>();
             var mockLogger = new Mock<ILogger<SendEmployerRequestsResponseNotificationActivity>>();
-
-            var mockTaskActivityContext = new Mock<TaskActivityContext>();
 
             var config = new ApplicationConfiguration()
             {
@@ -34,10 +31,10 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
             var sut = new SendEmployerRequestsResponseNotificationActivity(mockApi.Object, mockLogger.Object, mockOptions.Object);
 
             // Act
-            await sut.RunAsync(mockTaskActivityContext.Object, email);
+            await sut.RunActivity(email);
 
             // Assert
-            var expectedManageRequestsLink = $"{config.EmployerRequestApprenticeshipTrainingBaseUrl}{{0}}/dashboard";
+            var expectedManageRequestsLink = $"{config.EmployerRequestApprenticeshipTrainingBaseUrl}accounts/{{0}}/employer-requests/dashboard";
             var expectedNotificationsLink = $"{config.EmployerAccountsBaseUrl}settings/notifications";
 
             mockApi.Verify(s => s.SendEmployerRequestsResponseNotification(It.Is<SendEmployerRequestsResponseEmail>(e =>

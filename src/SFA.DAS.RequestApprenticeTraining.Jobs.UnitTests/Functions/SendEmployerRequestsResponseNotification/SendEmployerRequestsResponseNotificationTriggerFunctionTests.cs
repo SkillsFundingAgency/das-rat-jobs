@@ -1,5 +1,4 @@
 ﻿using Microsoft.Azure.Functions.Worker;
-using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsResponseNotification.UnitTests
 {
-    public class SendEmployerRequestsResponseNotification
+    public class SendEmployerRequestsResponseNotificationTriggerFunctionTests
     {
         [Test]
         public async Task RunTimerTrigger_Should_Start_New_Orchestration_And_Log_Messages()
