@@ -6,7 +6,7 @@ using SFA.DAS.RequestApprenticeTraining.Infrastructure.Configuration;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Extensions
 {
-    public static class AddConfigurationExtension
+    public static class AddConfigurationExtensions
     {
         public static void AddConfiguration(this IConfigurationBuilder builder)
         {

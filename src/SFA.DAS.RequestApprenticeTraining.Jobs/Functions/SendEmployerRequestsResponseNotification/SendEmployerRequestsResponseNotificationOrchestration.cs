@@ -7,7 +7,7 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsR
 {
     public static class SendEmployerRequestsResponseNotificationOrchestration
     {
-        [Function("SendEmployerRequestsResponseNotificationOrchestration")]
+        [Function(nameof(SendEmployerRequestsResponseNotificationOrchestration))]
         public static async Task RunOrchestrator([OrchestrationTrigger] TaskOrchestrationContext context)
         {
             ILogger logger = context.CreateReplaySafeLogger(typeof(SendEmployerRequestsResponseNotificationOrchestration));

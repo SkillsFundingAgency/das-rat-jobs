@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsResponseNotification.UnitTests
 {
-    public class SendEmployerRequestsResponseNotificationTriggerFunctionTests
+    public class SendEmployerRequestsResponseNotificationFunctionTests
     {
         [Test]
         public async Task RunTimerTrigger_Should_Start_New_Orchestration_And_Log_Messages()
         {
             // Arrange
             var mockDurableTaskClient = new Mock<FakeDurableTaskClient>();
-            var mockLogger = new Mock<ILogger<SendEmployerRequestsResponseNotificationTriggerFunction>>();
+            var mockLogger = new Mock<ILogger<SendEmployerRequestsResponseNotificationFunction>>();
             var timerInfo = new TimerInfo();
 
-            var function = new SendEmployerRequestsResponseNotificationTriggerFunction(mockLogger.Object);
+            var function = new SendEmployerRequestsResponseNotificationFunction(mockLogger.Object);
 
             mockDurableTaskClient
                 .Setup(x => x.ScheduleNewOrchestrationInstanceAsync(nameof(SendEmployerRequestsResponseNotificationOrchestration), CancellationToken.None))

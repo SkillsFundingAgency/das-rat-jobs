@@ -5,11 +5,11 @@ using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsResponseNotification
 {
-    public class SendEmployerRequestsResponseNotificationTriggerFunction
+    public class SendEmployerRequestsResponseNotificationFunction
     {
-        private readonly ILogger<SendEmployerRequestsResponseNotificationTriggerFunction> _logger;
+        private readonly ILogger<SendEmployerRequestsResponseNotificationFunction> _logger;
         
-        public SendEmployerRequestsResponseNotificationTriggerFunction(ILogger<SendEmployerRequestsResponseNotificationTriggerFunction> logger)
+        public SendEmployerRequestsResponseNotificationFunction(ILogger<SendEmployerRequestsResponseNotificationFunction> logger)
         {
             _logger = logger;
         }
