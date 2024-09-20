@@ -1,5 +1,4 @@
-﻿using SFA.DAS.RequestApprenticeTraining.Domain.Types;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Responses
 {

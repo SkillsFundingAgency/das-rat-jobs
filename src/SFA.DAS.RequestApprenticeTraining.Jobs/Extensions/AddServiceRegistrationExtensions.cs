@@ -2,11 +2,10 @@
 using RestEase.HttpClientFactory;
 using SFA.DAS.Http.Configuration;
 using SFA.DAS.Http.MessageHandlers;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure;
 using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
 using SFA.DAS.RequestApprenticeTraining.Infrastructure.Configuration;
 
-namespace SFA.DAS.RequestApprenticeTraining.Jobs.StartupExtensions
+namespace SFA.DAS.RequestApprenticeTraining.Jobs.Extensions
 {
     public static class AddServiceRegistrationExtensions
     {
@@ -23,6 +22,7 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.StartupExtensions
             services
                 .AddRestEaseClient<IEmployerRequestApprenticeTrainingOuterApi>(configuration.ApiBaseUrl)
                 .AddHttpMessageHandler<DefaultHeadersHandler>()
+                .AddHttpMessageHandler<ApimHeadersHandler>()
                 .AddHttpMessageHandler<LoggingMessageHandler>();
 
             services.AddTransient<IApimClientConfiguration>((_) => configuration);

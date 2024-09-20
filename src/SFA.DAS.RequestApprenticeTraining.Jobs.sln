@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RequestApprenticeTr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RequestApprenticeTraining.Infrastructure", "SFA.DAS.RequestApprenticeTraining.Infrastructure\SFA.DAS.RequestApprenticeTraining.Infrastructure.csproj", "{18DA033D-65A5-4526-9A57-0D15B9D37CAC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RequestApprenticeTraining.Domain", "SFA.DAS.RequestApprenticeTraining.Domain\SFA.DAS.RequestApprenticeTraining.Domain.csproj", "{7A3BAA23-9301-4FC5-BD6A-BC2FB40DF547}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,10 +29,6 @@ Global
 		{18DA033D-65A5-4526-9A57-0D15B9D37CAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18DA033D-65A5-4526-9A57-0D15B9D37CAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18DA033D-65A5-4526-9A57-0D15B9D37CAC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7A3BAA23-9301-4FC5-BD6A-BC2FB40DF547}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7A3BAA23-9301-4FC5-BD6A-BC2FB40DF547}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7A3BAA23-9301-4FC5-BD6A-BC2FB40DF547}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7A3BAA23-9301-4FC5-BD6A-BC2FB40DF547}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
