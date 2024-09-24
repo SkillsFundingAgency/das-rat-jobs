@@ -1,54 +1,50 @@
-﻿using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Requests;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Responses;
-using System.Linq;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Configuration;
-using Microsoft.Extensions.Options;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsResponseNotification
 {
     public class SendEmployerRequestsResponseNotificationFunction
     {
         private readonly ILogger<SendEmployerRequestsResponseNotificationFunction> _logger;
-        private readonly IEmployerRequestApprenticeTrainingOuterApi _api;
-        private readonly IOptions<ApplicationConfiguration> _options;
-
-        public SendEmployerRequestsResponseNotificationFunction(
-            ILogger<SendEmployerRequestsResponseNotificationFunction> logger,
-            IEmployerRequestApprenticeTrainingOuterApi api,
-            IOptions<ApplicationConfiguration> options)
+        
+        public SendEmployerRequestsResponseNotificationFunction(ILogger<SendEmployerRequestsResponseNotificationFunction> logger)
         {
             _logger = logger;
-            _api = api;
-            _options = options;
         }
 
-        [FunctionName("SendEmployerRequestsResponseNotification")]
-        public async Task SendEmployerRequestsResponseNotification(
-            [ActivityTrigger] EmployerRequestResponseEmail response)
+        [Function(nameof(SendEmployerRequestsResponseNotificationTimer))]
+        public async Task SendEmployerRequestsResponseNotificationTimer([TimerTrigger("%SendEmployerRequestsResponseNotificationTimerSchedule%")] TimerInfo myTimer,
+            [DurableClient] DurableTaskClient client)
         {
-            _logger.LogInformation($"SendEmployerRequestsResponseNotification executed at: {System.DateTime.Now}");
+            await Run(nameof(SendEmployerRequestsResponseNotificationTimer), client);
+        }
 
-            // Construct the notification request
-            var emailRequest = new SendEmployerRequestsResponseEmail
+#if DEBUG
+        [Function(nameof(SendEmployerRequestsResponseNotificationHttp))]
+        public async Task SendEmployerRequestsResponseNotificationHttp(
+            [HttpTrigger(AuthorizationLevel.Function, "POST")] HttpRequest request,
+            [DurableClient] DurableTaskClient client)
+        {
+            await Run(nameof(SendEmployerRequestsResponseNotificationHttp), client);
+        }
+#endif
+
+        private async Task Run(string functionName, [DurableClient] DurableTaskClient client)
+        {
+            try
             {
-                AccountId = response.AccountId,
-                RequestedBy = response.RequestedBy,
-                Standards = response.Standards.Select(s => new Infrastructure.Api.Requests.StandardDetails
-                {
-                    StandardTitle = s.StandardTitle,
-                    StandardLevel = s.StandardLevel,
-                }).ToList(),
-                ManageRequestsLink = $"{_options.Value.EmployerRequestApprenticeshipTrainingBaseUrl}{{0}}/dashboard",
-                ManageNotificationSettingsLink = $"{_options.Value.EmployerAccountsBaseUrl}settings/notifications",
-            };
+                _logger.LogInformation("{FunctionName} has been triggered", functionName);
 
-            await _api.SendEmployerRequestsResponseNotification(emailRequest);
+                string instanceId = await client.ScheduleNewOrchestrationInstanceAsync(nameof(SendEmployerRequestsResponseNotificationOrchestration), CancellationToken.None);
+
+                _logger.LogInformation("{FunctionName} has started orchestration with {InstanceId}", functionName, instanceId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "{FunctionName} has has failed", functionName);
+            }
         }
     }
-
 }

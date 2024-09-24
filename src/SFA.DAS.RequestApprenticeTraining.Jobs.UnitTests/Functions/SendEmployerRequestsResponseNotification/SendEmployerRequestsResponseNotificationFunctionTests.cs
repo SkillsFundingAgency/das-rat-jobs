@@ -1,47 +1,36 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Requests;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api.Responses;
-using SFA.DAS.RequestApprenticeTraining.Infrastructure.Configuration;
-using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.RequestApprenticeTraining.Jobs.UnitTests.Helpers;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.SendEmployerRequestsResponseNotification.UnitTests
 {
-    public class SendEmployerRequestsResponseNotificationsFunctionTests
+    public class SendEmployerRequestsResponseNotificationFunctionTests
     {
-        [Test, MoqAutoData]
-        public async Task SendProviderResponseNotifications_Should_Send_Notification(EmployerRequestResponseEmail email)
+        [Test]
+        public async Task RunTimerTrigger_Should_Start_New_Orchestration_And_Log_Messages()
         {
             // Arrange
-            var mockApi = new Mock<IEmployerRequestApprenticeTrainingOuterApi>();
+            var mockDurableTaskClient = new Mock<FakeDurableTaskClient>();
             var mockLogger = new Mock<ILogger<SendEmployerRequestsResponseNotificationFunction>>();
-            var mockOptions = new Mock<IOptions<ApplicationConfiguration>>();
-            var config = new ApplicationConfiguration()
-            {
-                EmployerAccountsBaseUrl = "http://employeraccounts/",
-                EmployerRequestApprenticeshipTrainingBaseUrl = $"http://employerratweb/",
-            };
-            mockOptions.Setup(o => o.Value).Returns(config);
+            var timerInfo = new TimerInfo();
 
-            var function = new SendEmployerRequestsResponseNotificationFunction(mockLogger.Object, mockApi.Object, mockOptions.Object);
+            var function = new SendEmployerRequestsResponseNotificationFunction(mockLogger.Object);
+
+            mockDurableTaskClient
+                .Setup(x => x.ScheduleNewOrchestrationInstanceAsync(nameof(SendEmployerRequestsResponseNotificationOrchestration), CancellationToken.None))
+                .ReturnsAsync("test-instance-id");
 
             // Act
-            await function.SendEmployerRequestsResponseNotification(email);
+            await function.SendEmployerRequestsResponseNotificationTimer(timerInfo, mockDurableTaskClient.Object);
 
             // Assert
-            var expectedManageRequestsLink = $"{config.EmployerRequestApprenticeshipTrainingBaseUrl}{{0}}/dashboard";
-            var expectedNotificationsLink = $"{config.EmployerAccountsBaseUrl}settings/notifications";
-
-            mockApi.Verify(s => s.SendEmployerRequestsResponseNotification(It.Is<SendEmployerRequestsResponseEmail>(e =>
-                e.AccountId == email.AccountId &&
-                e.RequestedBy == email.RequestedBy &&
-                e.ManageNotificationSettingsLink == expectedNotificationsLink &&
-                e.ManageRequestsLink == expectedManageRequestsLink
-            )), Times.Once);
+            mockDurableTaskClient.Verify(x =>
+                x.ScheduleNewOrchestrationInstanceAsync(nameof(SendEmployerRequestsResponseNotificationOrchestration), CancellationToken.None),
+                Times.Once);
         }
     }
 }
