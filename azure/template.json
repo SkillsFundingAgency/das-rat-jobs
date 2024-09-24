@@ -80,6 +80,9 @@
         },
         "sendEmployerRequestsResponseNotificationTimerSchedule": {
             "type": "string"
+        },
+        "refreshStandardsTimerSchedule": {
+            "type": "string"
         }
     },
     "variables": {
@@ -291,6 +294,10 @@
                                 {
                                   "name": "SendEmployerRequestsResponseNotificationTimerSchedule",
                                   "value": "[parameters('sendEmployerRequestsResponseNotificationTimerSchedule')]"
+                                },
+                                {
+                                  "name": "RefreshStandardsTimerSchedule",
+                                  "value": "[parameters('refreshStandardsTimerSchedule')]"
                                 }
                             ]
                         }

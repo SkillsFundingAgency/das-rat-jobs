@@ -37,7 +37,8 @@ In the `SFA.DAS.RequestApprenticeTraining.Jobs` project, if not exist already, a
         "EnvironmentName": "LOCAL",
         "ConfigurationStorageConnectionString": "UseDevelopmentStorage=true",
         "ExpireEmployerRequestsTimerSchedule": "*/1 * * * *",
-        "SendEmployerRequestsResponseNotificationTimerSchedule": "*/1 * * * *"
+        "SendEmployerRequestsResponseNotificationTimerSchedule": "*/1 * * * *",
+        "RefreshStandardsTimerSchedule": "*/1 * * * *"
     }
 }
 ```

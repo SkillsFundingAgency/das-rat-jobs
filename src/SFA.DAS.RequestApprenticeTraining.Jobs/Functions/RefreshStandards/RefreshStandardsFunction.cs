@@ -1,8 +1,5 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RequestApprenticeTraining.Infrastructure.Api;
 
@@ -10,47 +7,44 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs.Functions.RefreshStandards
 {
     public class RefreshStandardsFunction
     {
-        private readonly ILogger<RefreshStandardsFunction> _log;
+        private readonly ILogger<RefreshStandardsFunction> _logger;
         private readonly IEmployerRequestApprenticeTrainingOuterApi _api;
 
         public RefreshStandardsFunction(ILogger<RefreshStandardsFunction> log, IEmployerRequestApprenticeTrainingOuterApi api)
         {
-            _log = log;
+            _logger = log;
             _api = api;
         }
 
-        [FunctionName("RefreshStandardsFunction")]
-        public async Task RefreshStandardsTimer([TimerTrigger("%FunctionsOptions:RefreshStandardsTimerSchedule%")] TimerInfo timer)
+        [Function(nameof(RefreshStandardsTimer))]
+        public async Task RefreshStandardsTimer([TimerTrigger("%RefreshStandardsTimerSchedule%")] TimerInfo timer)
         {
-            try
-            {
-                await _api.RefreshStandards();
-            }
-            catch (Exception ex)
-            {
-                _log.LogError(ex, $"RefreshStandardsTimer has failed");
-                throw;
-            }
-
+            await Run(nameof(RefreshStandardsTimer));
         }
 
 #if DEBUG
-        [FunctionName("RefreshStandardsHttp")]
+        [Function(nameof(RefreshStandardsHttp))]
         public async Task RefreshStandardsHttp(
             [HttpTrigger(AuthorizationLevel.Function, "GET")] HttpRequest request)
         {
+            await Run(nameof(RefreshStandardsHttp));
+        }
+#endif
+        private async Task Run(string functionName)
+        {
             try
             {
-                _log.LogInformation($"RefreshStandardsHttp has started");
+                _logger.LogInformation("{FunctionName} has started", functionName);
+
                 await _api.RefreshStandards();
-                _log.LogInformation($"RefreshStandardsHttp has finished");
+
+                _logger.LogInformation("{FunctionName} has finished", functionName);
             }
             catch (Exception ex)
             {
-                _log.LogError(ex, $"RefreshStandardsHttp has failed");
+                _logger.LogError(ex, "{FunctionName} has has failed", functionName);
                 throw;
             }
         }
-#endif
     }
 }
