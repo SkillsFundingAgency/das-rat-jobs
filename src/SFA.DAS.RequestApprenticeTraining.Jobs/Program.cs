@@ -1,6 +1,5 @@
-using Microsoft.Azure.Functions.Worker;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.RequestApprenticeTraining.Jobs.Extensions;
 
 namespace SFA.DAS.RequestApprenticeTraining.Jobs
@@ -15,21 +14,27 @@ namespace SFA.DAS.RequestApprenticeTraining.Jobs
                 {
                     config.AddConfiguration();
                 })
+
                 .ConfigureServices((context, services) =>
                 {
-                    services.AddApplicationInsightsTelemetryWorkerService();
-                    services.ConfigureFunctionsApplicationInsights();
                     services.AddApplicationOptions();
                     services.ConfigureFromOptions(f => f.EmployerRequestApprenticeTrainingOuterApiConfiguration);
+
                     services.AddOuterApi();
+                    services.AddOpenTelemetryRegistration(context.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
+
                 })
                 .ConfigureLogging((hostingContext, logging) =>
                 {
-                    logging.AddLogging();
+                    logging.SetMinimumLevel(LogLevel.Information);
+
+                    logging.AddFilter("Microsoft", LogLevel.Warning);
+                    logging.AddFilter("System", LogLevel.Warning);
+                    logging.AddFilter("SFA.DAS.RequestApprenticeTraining.Jobs", LogLevel.Information);
                 })
                 .Build();
 
-                await host.RunAsync();
+            await host.RunAsync();
         }
     }
 }
